@@ -1,8 +1,10 @@
 package com.matthewbrunelle
 
+import org.apache.poi.ss.usermodel.CellType.ERROR
 import org.apache.poi.ss.util.WorkbookUtil
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.junit.jupiter.api.Test
+import org.unitils.reflectionassert.ReflectionAssert.assertLenientEquals
 import org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals
 import org.unitils.reflectionassert.ReflectionComparatorMode.LENIENT_DATES
 import java.util.*
@@ -55,8 +57,8 @@ class DevelopersGuide {
     }
 
     @Test
-    fun creatingCell() {
-        val expectedWb = GenerateTestInputs.newSheet()
+    fun creatingCells() {
+        val expectedWb = GenerateTestInputs.creatingCells()
 
         // TODO: extensions for creation helper?
 
@@ -76,8 +78,8 @@ class DevelopersGuide {
     }
 
     @Test
-    fun creatingDateCell() {
-        val expectedWb = GenerateTestInputs.newSheet()
+    fun creatingDateCells() {
+        val expectedWb = GenerateTestInputs.creatingDateCells()
 
         val wb = workbook {
             // TODO: should you be able to do this in a inner scope?
@@ -97,12 +99,12 @@ class DevelopersGuide {
             }
         }
 
-        assertReflectionEquals(expectedWb, wb)
+        assertLenientEquals(expectedWb, wb)
     }
 
     @Test
     fun differentKindsOfCells() {
-        val expectedWb = GenerateTestInputs.newSheet()
+        val expectedWb = GenerateTestInputs.differentKindsOfCells()
 
         val wb = workbook {
             // TODO: should you be able to do this in a inner scope?
@@ -111,13 +113,12 @@ class DevelopersGuide {
             sheet("new sheet") {
                 row {
                     // TODO: make lambda for cell optional?
+                    cell(1.1){}
                     cell(Date()){}
-                    cell(Date()){
-                        cellStyle = dateCellStyle
-                    }
-                    cell (Calendar.getInstance()) {
-                        cellStyle = dateCellStyle
-                    }
+                    cell (Calendar.getInstance()) {}
+                    cell ("a string") {}
+                    cell (true) {}
+                    cell (ERROR) {}
                 }
             }
         }

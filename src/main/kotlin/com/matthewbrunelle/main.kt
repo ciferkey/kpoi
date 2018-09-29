@@ -65,15 +65,3 @@ fun Row2.cell(value: Any? = null, block: Cell.() -> Unit): Cell {
     }
     return cell.apply(block)
 }
-
-fun main(args: Array<String>) {
-    workbook {
-        sheet {
-            row {
-                cell {
-                    this.setCellValue(0.0)
-                }
-            }
-        }
-    }.write("workbook.xls")
-}
