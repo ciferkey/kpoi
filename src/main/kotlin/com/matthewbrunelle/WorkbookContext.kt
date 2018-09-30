@@ -19,6 +19,10 @@ fun Workbook.sheet(name: String? = null, block: Sheet.() -> Unit): Sheet {
     }.apply(block)
 }
 
+fun Workbook.font(block: Font.() -> Unit): Font {
+    return createFont().apply(block)
+}
+
 fun Workbook.write(fileName: String) {
     FileOutputStream(fileName).use { fileOut -> this.write(fileOut) }
 }

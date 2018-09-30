@@ -1,10 +1,16 @@
 package com.matthewbrunelle
 
+import org.apache.poi.hssf.util.HSSFColor
+import org.apache.poi.ss.usermodel.BorderStyle.*
 import org.apache.poi.ss.usermodel.CellType.ERROR
+import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.HorizontalAlignment.*
+import org.apache.poi.ss.usermodel.IndexedColors
+import org.apache.poi.ss.usermodel.IndexedColors.*
 import org.apache.poi.ss.usermodel.VerticalAlignment
 import org.apache.poi.ss.usermodel.VerticalAlignment.*
+import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.ss.util.WorkbookUtil
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.junit.jupiter.api.Test
@@ -120,7 +126,6 @@ class DevelopersGuide {
         val wb = workbook {
             // TODO: should you be able to do this in a inner scope?
             // TODO: mechanisms for defaulting cell styles?
-            val dateCellStyle = createCellStyle()
             sheet("new sheet") {
                 row {
                     // TODO: make lambda for cell optional?
@@ -151,33 +156,142 @@ class DevelopersGuide {
                         }
                     }
                     cell("Align It") {
-                        style {
-                            align(CENTER_SELECTION, BOTTOM)
-                        }
+                        style { align(CENTER_SELECTION, BOTTOM) }
                     }
                     cell("Align It") {
-                        style {
-                            align(FILL, VerticalAlignment.CENTER)
-                        }
+                        style { align(FILL, VerticalAlignment.CENTER) }
                     }
                     cell("Align It") {
-                        style {
-                            align(GENERAL, VerticalAlignment.CENTER)
-                        }
+                        style { align(GENERAL, VerticalAlignment.CENTER) }
                     }
                     cell("Align It") {
-                        style {
-                            align(HorizontalAlignment.JUSTIFY, VerticalAlignment.JUSTIFY)
-                        }
+                        style { align(HorizontalAlignment.JUSTIFY, VerticalAlignment.JUSTIFY) }
                     }
                     cell("Align It") {
+                        style { align(LEFT, TOP) }
+                    }
+                    cell("Align It") {
+                        style { align(RIGHT, TOP) }
+                    }
+                }
+            }
+        }
+
+        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+    }
+
+    @Test
+    fun workingWithBorders() {
+        val expectedWb = GenerateTestInputs.workingWithBorders()
+
+        val wb = workbook {
+            sheet("new sheet") {
+                row(1) {
+                    cell(4.0, 1) {
                         style {
-                            align(LEFT, TOP)
+                            borderBottom = THIN
+                            bottomBorderColor = BLACK.index
+                            borderBottom = THIN
+                            bottomBorderColor = GREEN.index
+                            borderBottom = THIN
+                            bottomBorderColor = BLUE.index
+                            borderBottom = MEDIUM_DASHED
+                            bottomBorderColor = BLACK.index
                         }
                     }
-                     cell("Align It") {
+                }
+            }
+        }
+
+        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+    }
+
+    @Test
+    fun fillsAndColors() {
+        val expectedWb = GenerateTestInputs.fillsAndColors()
+
+        val wb = workbook {
+            sheet("new sheet") {
+                row(1) {
+                    cell("X", 1) {
                         style {
-                            align(RIGHT, TOP)
+                            fillBackgroundColor = IndexedColors.AQUA.getIndex()
+                            fillPattern = FillPatternType.BIG_SPOTS
+                        }
+                    }
+                    cell("X", 2) {
+                        style {
+                            fillForegroundColor = IndexedColors.ORANGE.getIndex()
+                            fillPattern = FillPatternType.SOLID_FOREGROUND
+                        }
+                    }
+                }
+            }
+        }
+
+        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+    }
+
+    @Test
+    fun mergingCells() {
+        val expectedWb = GenerateTestInputs.mergingCells()
+
+        val wb = workbook {
+            sheet("new sheet") {
+                row(1) {
+                    cell("This is a test of merging", 1) {}
+                    merge(
+                            1, //first row (0-based)
+                            1, //last row  (0-based)
+                            1, //first column (0-based)
+                            2  //last column  (0-based)
+                    )
+                }
+            }
+        }
+
+        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+    }
+
+    @Test
+    fun workingWithFonts() {
+        val expectedWb = GenerateTestInputs.workingWithFonts()
+
+        val wb = workbook {
+            sheet("new sheet") {
+                row(1) {
+                    cell("This is a test of fonts", 1) {
+                        style {
+                            // TODO: why can't property notation be used here?
+                            setFont(font {
+                                fontHeightInPoints = 24.toShort()
+                                fontName = "Courier New"
+                                italic = true
+                                strikeout = true
+                            })
+                        }
+                    }
+                }
+            }
+        }
+
+        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+    }
+
+    @Test
+    fun customColors() {
+        val expectedWb = GenerateTestInputs.customColors()
+
+        val wb = workbook {
+            sheet {
+                row {
+                    cell("Default Palette") {
+                        style {
+                            fillForegroundColor = HSSFColor.HSSFColorPredefined.LIME.index
+                            fillPattern = FillPatternType.SOLID_FOREGROUND
+                            setFont(font {
+                                color = HSSFColor.HSSFColorPredefined.RED.index
+                            })
                         }
                     }
                 }

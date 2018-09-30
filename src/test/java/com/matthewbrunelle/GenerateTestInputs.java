@@ -1,7 +1,9 @@
 package com.matthewbrunelle;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.assertj.core.api.IterableAssert;
@@ -122,5 +124,122 @@ public class GenerateTestInputs {
         cellStyle.setAlignment(halign);
         cellStyle.setVerticalAlignment(valign);
         cell.setCellStyle(cellStyle);
+    }
+
+    public static Workbook workingWithBorders() {
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("new sheet");
+
+        // Create a row and put some cells in it. Rows are 0 based.
+        Row row = sheet.createRow(1);
+
+        // Create a cell and put a value in it.
+        Cell cell = row.createCell(1);
+        cell.setCellValue(4);
+
+        // Style the cell with borders all around.
+        CellStyle style = wb.createCellStyle();
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setLeftBorderColor(IndexedColors.GREEN.getIndex());
+        style.setBorderRight(BorderStyle.THIN);
+        style.setRightBorderColor(IndexedColors.BLUE.getIndex());
+        style.setBorderTop(BorderStyle.MEDIUM_DASHED);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        cell.setCellStyle(style);
+        return wb;
+    }
+
+
+    public static Workbook fillsAndColors() {
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("new sheet");
+
+        // Create a row and put some cells in it. Rows are 0 based.
+        Row row = sheet.createRow(1);
+
+        // Aqua background
+        CellStyle style = wb.createCellStyle();
+        style.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+        style.setFillPattern(FillPatternType.BIG_SPOTS);
+        Cell cell = row.createCell(1);
+        cell.setCellValue("X");
+        cell.setCellStyle(style);
+
+        // Orange "foreground", foreground being the fill foreground not the font color.
+        style = wb.createCellStyle();
+        style.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cell = row.createCell(2);
+        cell.setCellValue("X");
+        cell.setCellStyle(style);
+
+        return wb;
+    }
+
+    public static Workbook mergingCells() {
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("new sheet");
+
+        Row row = sheet.createRow(1);
+        Cell cell = row.createCell(1);
+        cell.setCellValue("This is a test of merging");
+
+        sheet.addMergedRegion(new CellRangeAddress(
+                1, //first row (0-based)
+                1, //last row  (0-based)
+                1, //first column (0-based)
+                2  //last column  (0-based)
+        ));
+        return wb;
+    }
+
+    public static Workbook workingWithFonts() {
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("new sheet");
+
+        // Create a row and put some cells in it. Rows are 0 based.
+        Row row = sheet.createRow(1);
+
+        // Create a new font and alter it.
+        Font font = wb.createFont();
+        font.setFontHeightInPoints((short)24);
+        font.setFontName("Courier New");
+        font.setItalic(true);
+        font.setStrikeout(true);
+
+        // Fonts are set into a style so create a new one to use.
+        CellStyle style = wb.createCellStyle();
+        style.setFont(font);
+
+        // Create a cell and put a value in it.
+        Cell cell = row.createCell(1);
+        cell.setCellValue("This is a test of fonts");
+        cell.setCellStyle(style);
+        return wb;
+    }
+
+    public static Workbook customColors() {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        HSSFRow row = sheet.createRow(0);
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("Default Palette");
+
+        //apply some colors from the standard palette,
+        // as in the previous examples.
+        //we'll use red text on a lime background
+
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIME.getIndex());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        HSSFFont font = wb.createFont();
+        font.setColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
+        style.setFont(font);
+
+        cell.setCellStyle(style);
+        return wb;
     }
 }
