@@ -1,10 +1,13 @@
 package com.matthewbrunelle
 
 import org.apache.poi.ss.usermodel.CellType.ERROR
+import org.apache.poi.ss.usermodel.HorizontalAlignment
+import org.apache.poi.ss.usermodel.HorizontalAlignment.*
+import org.apache.poi.ss.usermodel.VerticalAlignment
+import org.apache.poi.ss.usermodel.VerticalAlignment.*
 import org.apache.poi.ss.util.WorkbookUtil
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.junit.jupiter.api.Test
-import org.unitils.reflectionassert.ReflectionAssert.assertLenientEquals
 import org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals
 import org.unitils.reflectionassert.ReflectionComparatorMode.LENIENT_DATES
 import java.util.*
@@ -66,10 +69,10 @@ class DevelopersGuide {
             sheet("new sheet") {
                 row {
                     // TODO: make lambda for cell optional?
-                    cell(1.0){}
-                    cell (1.2) {}
-                    cell (creationHelper.createRichTextString("This is a string")){ }
-                    cell (true) {}
+                    cell(1.0) {}
+                    cell(1.2) {}
+                    cell(creationHelper.createRichTextString("This is a string")) { }
+                    cell(true) {}
                 }
             }
         }
@@ -79,6 +82,8 @@ class DevelopersGuide {
 
     @Test
     fun creatingDateCells() {
+//        AssertionsForInterfaceTypes.setLenientDateParsing(true)
+
         val expectedWb = GenerateTestInputs.creatingDateCells()
 
         val wb = workbook {
@@ -88,18 +93,24 @@ class DevelopersGuide {
             sheet("new sheet") {
                 row {
                     // TODO: make lambda for cell optional?
-                    cell(Date()){}
-                    cell(Date()){
+                    cell(Date()) {}
+                    cell(Date()) {
                         cellStyle = dateCellStyle
                     }
-                    cell (Calendar.getInstance()) {
+                    cell(Calendar.getInstance()) {
                         cellStyle = dateCellStyle
                     }
                 }
             }
         }
 
-        assertLenientEquals(expectedWb, wb)
+        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+//        assertThat(expectedWb as Any)
+//                .usingComparatorForType(RecursiveFieldByFieldComparator(emptyMap(), TypeComparators()), Workbook::class.java)
+//                .usingComparatorForType(RecursiveFieldByFieldComparator(emptyMap(), TypeComparators()), Sheet::class.java)
+//                .usingComparatorForType(RecursiveFieldByFieldComparator(emptyMap(), TypeComparators()), Row::class.java)
+//                .usingComparatorForType(RecursiveFieldByFieldComparator(emptyMap(), TypeComparators()), Cell::class.java)
+//                .isEqualToComparingFieldByFieldRecursively(wb)
     }
 
     @Test
@@ -113,16 +124,66 @@ class DevelopersGuide {
             sheet("new sheet") {
                 row {
                     // TODO: make lambda for cell optional?
-                    cell(1.1){}
-                    cell(Date()){}
-                    cell (Calendar.getInstance()) {}
-                    cell ("a string") {}
-                    cell (true) {}
-                    cell (ERROR) {}
+                    cell(1.1) {}
+                    cell(Date()) {}
+                    cell(Calendar.getInstance()) {}
+                    cell("a string") {}
+                    cell(true) {}
+                    cell(ERROR) {}
                 }
             }
         }
 
-        assertReflectionEquals(expectedWb, wb)
+        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+    }
+
+    @Test
+    fun alignmentOptions() {
+        val expectedWb = GenerateTestInputs.alignmentOptions()
+
+        val wb = workbook {
+            sheet {
+                row(2) {
+                    heightInPoints = 30F
+                    cell("Align It") {
+                        style {
+                            align(HorizontalAlignment.CENTER, BOTTOM)
+                        }
+                    }
+                    cell("Align It") {
+                        style {
+                            align(CENTER_SELECTION, BOTTOM)
+                        }
+                    }
+                    cell("Align It") {
+                        style {
+                            align(FILL, VerticalAlignment.CENTER)
+                        }
+                    }
+                    cell("Align It") {
+                        style {
+                            align(GENERAL, VerticalAlignment.CENTER)
+                        }
+                    }
+                    cell("Align It") {
+                        style {
+                            align(HorizontalAlignment.JUSTIFY, VerticalAlignment.JUSTIFY)
+                        }
+                    }
+                    cell("Align It") {
+                        style {
+                            align(LEFT, TOP)
+                        }
+                    }
+                     cell("Align It") {
+                        style {
+                            align(RIGHT, TOP)
+                        }
+                    }
+                }
+            }
+        }
+
+        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
     }
 }

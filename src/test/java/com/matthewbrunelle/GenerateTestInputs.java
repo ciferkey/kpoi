@@ -4,9 +4,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.assertj.core.api.IterableAssert;
+import org.assertj.core.api.ObjectAssert;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenerateTestInputs {
 
@@ -83,5 +87,40 @@ public class GenerateTestInputs {
         row.createCell(5).setCellType(CellType.ERROR);
 
         return wb;
+    }
+
+    public static Workbook alignmentOptions() {
+        Workbook wb = new HSSFWorkbook();
+
+        Sheet sheet = wb.createSheet();
+        Row row = sheet.createRow(2);
+        row.setHeightInPoints(30);
+
+        createCell(wb, row, 0, HorizontalAlignment.CENTER, VerticalAlignment.BOTTOM);
+        createCell(wb, row, 1, HorizontalAlignment.CENTER_SELECTION, VerticalAlignment.BOTTOM);
+        createCell(wb, row, 2, HorizontalAlignment.FILL, VerticalAlignment.CENTER);
+        createCell(wb, row, 3, HorizontalAlignment.GENERAL, VerticalAlignment.CENTER);
+        createCell(wb, row, 4, HorizontalAlignment.JUSTIFY, VerticalAlignment.JUSTIFY);
+        createCell(wb, row, 5, HorizontalAlignment.LEFT, VerticalAlignment.TOP);
+        createCell(wb, row, 6, HorizontalAlignment.RIGHT, VerticalAlignment.TOP);
+        return wb;
+    }
+
+    /**
+     * Creates a cell and aligns it a certain way.
+     *
+     * @param wb     the workbook
+     * @param row    the row to create the cell in
+     * @param column the column number to create the cell in
+     * @param halign the horizontal alignment for the cell.
+     * @param valign the vertical alignment for the cell.
+     */
+    private static void createCell(Workbook wb, Row row, int column, HorizontalAlignment halign, VerticalAlignment valign) {
+        Cell cell = row.createCell(column);
+        cell.setCellValue("Align It");
+        CellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setAlignment(halign);
+        cellStyle.setVerticalAlignment(valign);
+        cell.setCellStyle(cellStyle);
     }
 }
