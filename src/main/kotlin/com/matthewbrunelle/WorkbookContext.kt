@@ -19,8 +19,10 @@ fun Workbook.sheet(name: String? = null, block: Sheet.() -> Unit): Sheet {
     }.apply(block)
 }
 
-fun Workbook.font(block: Font.() -> Unit): Font {
-    return createFont().apply(block)
+fun Workbook.font(style: CellStyle, block: Font.() -> Unit): Font {
+    val font = createFont().apply(block)
+    style.setFont(font)
+    return font
 }
 
 fun Workbook.write(fileName: String) {
