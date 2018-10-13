@@ -30,7 +30,7 @@ class DevelopersGuide {
     fun newWorkBook_1_1() {
         val expectedWb = GenerateTestInputs.newWorkBook_1_1()
 
-        val wb = workbook { }
+        val wb = workbook()
 
         assertReflectionEquals(expectedWb, wb)
     }
@@ -39,7 +39,7 @@ class DevelopersGuide {
     fun newWorkBook_1_2() {
         val expectedWb = GenerateTestInputs.newWorkBook_1_2()
 
-        val wb = workbook(XSSFWorkbook()) { }
+        val wb = workbook(XSSFWorkbook())
 
         // XLS notebooks have metadata containing dates
         assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
@@ -50,17 +50,11 @@ class DevelopersGuide {
         val expectedWb = GenerateTestInputs.newSheet()
 
         val wb = workbook {
-            sheet("new sheet") {
-
-            }
-            sheet("second sheet") {
-
-            }
+            sheet("new sheet")
+            sheet("second sheet")
             // TODO: make all name safe?
             val safeName = WorkbookUtil.createSafeSheetName("[O'Brien's sales*?]")
-            sheet(safeName) {
-
-            }
+            sheet(safeName)
         }
 
         assertReflectionEquals(expectedWb, wb)
@@ -75,11 +69,10 @@ class DevelopersGuide {
         val wb = workbook {
             sheet("new sheet") {
                 row {
-                    // TODO: make lambda for cell optional?
-                    cell(1.0) {}
-                    cell(1.2) {}
-                    cell(creationHelper.createRichTextString("This is a string")) { }
-                    cell(true) {}
+                    cell(1.0)
+                    cell(1.2)
+                    cell(creationHelper.createRichTextString("This is a string"))
+                    cell(true)
                 }
             }
         }
@@ -89,8 +82,6 @@ class DevelopersGuide {
 
     @Test
     fun creatingDateCells() {
-//        AssertionsForInterfaceTypes.setLenientDateParsing(true)
-
         val expectedWb = GenerateTestInputs.creatingDateCells()
 
         val wb = workbook {
@@ -102,7 +93,7 @@ class DevelopersGuide {
             sheet("new sheet") {
                 row {
                     // TODO: make lambda for cell optional?
-                    cell(date1) {}
+                    cell(date1)
                     cell(date1) {
                         cellStyle = dateCellStyle
                     }
@@ -125,12 +116,11 @@ class DevelopersGuide {
             // TODO: mechanisms for defaulting cell styles?
             sheet("new sheet") {
                 row(2) {
-                    // TODO: make lambda for cell optional?
-                    cell(1.1) {}
-                    cell(date1) {}
-                    cell(calendar1) {}
-                    cell("a string") {}
-                    cell(true) {}
+                    cell(1.1)
+                    cell(date1)
+                    cell(calendar1)
+                    cell("a string")
+                    cell(true)
                     cell(5) {
                         cellType = ERROR
                     }
@@ -238,7 +228,7 @@ class DevelopersGuide {
         val wb = workbook {
             sheet("new sheet") {
                 row(1) {
-                    cell("This is a test of merging", 1) {}
+                    cell("This is a test of merging", 1)
                     merge(
                             1, //first row (0-based)
                             1, //last row  (0-based)

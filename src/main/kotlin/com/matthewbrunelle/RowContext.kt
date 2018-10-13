@@ -6,7 +6,7 @@ import org.apache.poi.ss.usermodel.RichTextString
 import org.apache.poi.ss.usermodel.Row
 import java.util.*
 
-fun Row.cell(value: Any? = null, column: Int? = null, block: Cell.() -> Unit): Cell {
+fun Row.cell(value: Any? = null, column: Int? = null, block: Cell.() -> Unit = {}): Cell {
     // TODO: more idiomatic way?
     val cell = createCell(column ?: physicalNumberOfCells)
     value.let {

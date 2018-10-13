@@ -5,12 +5,12 @@ import org.apache.poi.ss.usermodel.*
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-fun workbook(wb: Workbook = HSSFWorkbook(), block: Workbook.() -> Unit): Workbook {
+fun workbook(wb: Workbook = HSSFWorkbook(), block: Workbook.() -> Unit = {}): Workbook {
     block(wb)
     return wb
 }
 
-fun Workbook.sheet(name: String? = null, block: Sheet.() -> Unit): Sheet {
+fun Workbook.sheet(name: String? = null, block: Sheet.() -> Unit = {}): Sheet {
     return if (name != null) {
         createSheet(name)
     } else {
