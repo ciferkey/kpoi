@@ -11,12 +11,16 @@ fun workbook(wb: Workbook = HSSFWorkbook(), block: Workbook.() -> Unit): Workboo
 }
 
 fun Workbook.sheet(name: String? = null, block: Sheet.() -> Unit): Sheet {
-    // TODO: find idiomatic way
     return if (name != null) {
         createSheet(name)
     } else {
         createSheet()
     }.apply(block)
+}
+
+fun Workbook.style(block: CellStyle.() -> Unit): CellStyle {
+    // Note, unlock at the cell and row level this style will not be set on anything
+    return createCellStyle().apply(block)
 }
 
 fun Workbook.font(block: Font.() -> Unit): Font {

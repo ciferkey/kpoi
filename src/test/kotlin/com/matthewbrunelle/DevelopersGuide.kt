@@ -1,7 +1,10 @@
 package com.matthewbrunelle
 
+import com.matthewbrunelle.GenerateTestInputs.calendar1
+import com.matthewbrunelle.GenerateTestInputs.date1
 import org.apache.poi.hssf.util.HSSFColor
-import org.apache.poi.ss.usermodel.BorderStyle.*
+import org.apache.poi.ss.usermodel.BorderStyle.MEDIUM_DASHED
+import org.apache.poi.ss.usermodel.BorderStyle.THIN
 import org.apache.poi.ss.usermodel.CellType.ERROR
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.HorizontalAlignment
@@ -9,21 +12,18 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment.*
 import org.apache.poi.ss.usermodel.IndexedColors
 import org.apache.poi.ss.usermodel.IndexedColors.*
 import org.apache.poi.ss.usermodel.VerticalAlignment
-import org.apache.poi.ss.usermodel.VerticalAlignment.*
-import org.apache.poi.ss.util.CellRangeAddress
+import org.apache.poi.ss.usermodel.VerticalAlignment.BOTTOM
+import org.apache.poi.ss.usermodel.VerticalAlignment.TOP
 import org.apache.poi.ss.util.WorkbookUtil
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.junit.jupiter.api.Test
 import org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals
 import org.unitils.reflectionassert.ReflectionComparatorMode.LENIENT_DATES
-import java.util.*
 
 
 /**
  * Translation of the "Busy Developers' Guide to HSSF and XSSF Features" )https://poi.apache.org/components/spreadsheet/quick-guide.html#NewWorkbook) to use this library. Also set up as runnable tests that compare their output to the original poi example's output.
  */
-
-
 class DevelopersGuide {
 
     @Test
@@ -41,6 +41,7 @@ class DevelopersGuide {
 
         val wb = workbook(XSSFWorkbook()) { }
 
+        // XLS notebooks have metadata containing dates
         assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
     }
 
@@ -95,28 +96,24 @@ class DevelopersGuide {
         val wb = workbook {
             // TODO: should you be able to do this in a inner scope?
             // TODO: mechanisms for defaulting cell styles?
-            val dateCellStyle = createCellStyle()
+            val dateCellStyle = style {
+                dataFormat = creationHelper.createDataFormat().getFormat("m/d/yy h:mm")
+            }
             sheet("new sheet") {
                 row {
                     // TODO: make lambda for cell optional?
-                    cell(Date()) {}
-                    cell(Date()) {
+                    cell(date1) {}
+                    cell(date1) {
                         cellStyle = dateCellStyle
                     }
-                    cell(Calendar.getInstance()) {
+                    cell(calendar1) {
                         cellStyle = dateCellStyle
                     }
                 }
             }
         }
 
-        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
-//        assertThat(expectedWb as Any)
-//                .usingComparatorForType(RecursiveFieldByFieldComparator(emptyMap(), TypeComparators()), Workbook::class.java)
-//                .usingComparatorForType(RecursiveFieldByFieldComparator(emptyMap(), TypeComparators()), Sheet::class.java)
-//                .usingComparatorForType(RecursiveFieldByFieldComparator(emptyMap(), TypeComparators()), Row::class.java)
-//                .usingComparatorForType(RecursiveFieldByFieldComparator(emptyMap(), TypeComparators()), Cell::class.java)
-//                .isEqualToComparingFieldByFieldRecursively(wb)
+        assertReflectionEquals(expectedWb, wb)
     }
 
     @Test
@@ -127,19 +124,21 @@ class DevelopersGuide {
             // TODO: should you be able to do this in a inner scope?
             // TODO: mechanisms for defaulting cell styles?
             sheet("new sheet") {
-                row {
+                row(2) {
                     // TODO: make lambda for cell optional?
                     cell(1.1) {}
-                    cell(Date()) {}
-                    cell(Calendar.getInstance()) {}
+                    cell(date1) {}
+                    cell(calendar1) {}
                     cell("a string") {}
                     cell(true) {}
-                    cell(ERROR) {}
+                    cell(5) {
+                        cellType = ERROR
+                    }
                 }
             }
         }
 
-        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+        assertReflectionEquals(expectedWb, wb)
     }
 
     @Test
@@ -177,7 +176,7 @@ class DevelopersGuide {
             }
         }
 
-        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+        assertReflectionEquals(expectedWb, wb)
     }
 
     @Test
@@ -191,19 +190,19 @@ class DevelopersGuide {
                         style {
                             borderBottom = THIN
                             bottomBorderColor = BLACK.index
-                            borderBottom = THIN
-                            bottomBorderColor = GREEN.index
-                            borderBottom = THIN
-                            bottomBorderColor = BLUE.index
-                            borderBottom = MEDIUM_DASHED
-                            bottomBorderColor = BLACK.index
+                            borderLeft = THIN
+                            leftBorderColor = GREEN.index
+                            borderRight = THIN
+                            rightBorderColor = BLUE.index
+                            borderTop = MEDIUM_DASHED
+                            topBorderColor = BLACK.index
                         }
                     }
                 }
             }
         }
 
-        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+        assertReflectionEquals(expectedWb, wb)
     }
 
     @Test
@@ -229,7 +228,7 @@ class DevelopersGuide {
             }
         }
 
-        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+        assertReflectionEquals(expectedWb, wb)
     }
 
     @Test
@@ -250,7 +249,7 @@ class DevelopersGuide {
             }
         }
 
-        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+        assertReflectionEquals(expectedWb, wb)
     }
 
     @Test
@@ -275,7 +274,7 @@ class DevelopersGuide {
             }
         }
 
-        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+        assertReflectionEquals(expectedWb, wb)
     }
 
     @Test
@@ -298,6 +297,54 @@ class DevelopersGuide {
             }
         }
 
-        assertReflectionEquals(expectedWb, wb, LENIENT_DATES)
+        assertReflectionEquals(expectedWb, wb)
+    }
+
+    @Test
+    fun newlinesInCells() {
+        val expectedWb = GenerateTestInputs.newlinesInCells()
+
+        val wb = workbook {
+            sheet {
+                row(2) {
+                    cell("Use \n with word wrap on to create a new line", 2) {
+                        style {
+                            wrapText = true
+                        }
+                    }
+                    heightInPoints = 2 * sheet.defaultRowHeightInPoints
+                }
+                autoSizeColumn(2)
+            }
+        }
+
+        assertReflectionEquals(expectedWb, wb)
+    }
+
+    @Test
+    fun dateFormats() {
+        val expectedWb = GenerateTestInputs.dateFormats()
+
+        val wb = workbook {
+            val format = createDataFormat()
+            sheet("format sheet") {
+                row {
+                    cell(11111.25) {
+                        style {
+                            dataFormat = format.getFormat("0.0")
+                        }
+                    }
+                }
+                row {
+                    cell(11111.25) {
+                        style {
+                            dataFormat = format.getFormat("#,##0.0000")
+                        }
+                    }
+                }
+            }
+        }
+
+        assertReflectionEquals(expectedWb, wb)
     }
 }

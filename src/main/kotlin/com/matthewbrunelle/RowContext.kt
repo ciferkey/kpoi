@@ -1,6 +1,7 @@
 package com.matthewbrunelle
 
 import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.RichTextString
 import org.apache.poi.ss.usermodel.Row
 import java.util.*
@@ -19,4 +20,10 @@ fun Row.cell(value: Any? = null, column: Int? = null, block: Cell.() -> Unit): C
         }
     }
     return cell.apply(block)
+}
+
+fun Row.style(block: CellStyle.() -> Unit): CellStyle {
+    val s = sheet.workbook.createCellStyle().apply(block)
+    rowStyle = s
+    return s
 }

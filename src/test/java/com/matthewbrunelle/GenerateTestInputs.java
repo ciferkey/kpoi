@@ -6,15 +6,19 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.assertj.core.api.IterableAssert;
-import org.assertj.core.api.ObjectAssert;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+/**
+ * The order of these steps have been changed since it impacts the comparison.
+ * Additonally usage of Date has be changed to facilitate testing.
+ */
 public class GenerateTestInputs {
+
+    public static Date date1 = new Date();
+
+    public static Calendar calendar1 = Calendar.getInstance();
 
     public static Workbook newWorkBook_1_1() {
         return new HSSFWorkbook();
@@ -51,7 +55,6 @@ public class GenerateTestInputs {
     }
 
     public static Workbook creatingDateCells() {
-        // Note: the order of these steps have been changed since it impacts the comparison
 
         Workbook wb = new HSSFWorkbook();
 
@@ -61,17 +64,17 @@ public class GenerateTestInputs {
         Row row = sheet.createRow(0);
 
         Cell cell = row.createCell(0);
-        cell.setCellValue(new Date());
+        cell.setCellValue(date1);
 
         CellStyle cellStyle = wb.createCellStyle();
         cellStyle.setDataFormat(
                 createHelper.createDataFormat().getFormat("m/d/yy h:mm"));
         cell = row.createCell(1);
-        cell.setCellValue(new Date());
+        cell.setCellValue(date1);
         cell.setCellStyle(cellStyle);
 
         cell = row.createCell(2);
-        cell.setCellValue(Calendar.getInstance());
+        cell.setCellValue(calendar1);
         cell.setCellStyle(cellStyle);
 
         return wb;
@@ -82,8 +85,8 @@ public class GenerateTestInputs {
         Sheet sheet = wb.createSheet("new sheet");
         Row row = sheet.createRow(2);
         row.createCell(0).setCellValue(1.1);
-        row.createCell(1).setCellValue(new Date());
-        row.createCell(2).setCellValue(Calendar.getInstance());
+        row.createCell(1).setCellValue(date1);
+        row.createCell(2).setCellValue(calendar1);
         row.createCell(3).setCellValue("a string");
         row.createCell(4).setCellValue(true);
         row.createCell(5).setCellType(CellType.ERROR);
@@ -240,6 +243,54 @@ public class GenerateTestInputs {
         style.setFont(font);
 
         cell.setCellStyle(style);
+        return wb;
+    }
+
+    public static Workbook newlinesInCells() {
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet();
+
+        Row row = sheet.createRow(2);
+        Cell cell = row.createCell(2);
+        cell.setCellValue("Use \n with word wrap on to create a new line");
+
+        //to enable newlines you need set a cell styles with wrap=true
+        CellStyle cs = wb.createCellStyle();
+        cs.setWrapText(true);
+        cell.setCellStyle(cs);
+
+        //increase row height to accomodate two lines of text
+        row.setHeightInPoints((2 * sheet.getDefaultRowHeightInPoints()));
+
+        //adjust column width to fit the content
+        sheet.autoSizeColumn(2);
+        return wb;
+    }
+
+    public static Workbook dateFormats() {
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("format sheet");
+        CellStyle style;
+        DataFormat format = wb.createDataFormat();
+        Row row;
+        Cell cell;
+        int rowNum = 0;
+        int colNum = 0;
+
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(colNum);
+        cell.setCellValue(11111.25);
+        style = wb.createCellStyle();
+        style.setDataFormat(format.getFormat("0.0"));
+        cell.setCellStyle(style);
+
+        row = sheet.createRow(rowNum++);
+        cell = row.createCell(colNum);
+        cell.setCellValue(11111.25);
+        style = wb.createCellStyle();
+        style.setDataFormat(format.getFormat("#,##0.0000"));
+        cell.setCellStyle(style);
+
         return wb;
     }
 }
