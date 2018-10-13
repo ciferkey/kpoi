@@ -262,12 +262,12 @@ class DevelopersGuide {
                     cell("This is a test of fonts", 1) {
                         style {
                             // TODO: why can't property notation be used here?
-                            setFont(font {
+                            font(this) {
                                 fontHeightInPoints = 24.toShort()
                                 fontName = "Courier New"
                                 italic = true
                                 strikeout = true
-                            })
+                            }
                         }
                     }
                 }
@@ -288,9 +288,9 @@ class DevelopersGuide {
                         style {
                             fillForegroundColor = HSSFColor.HSSFColorPredefined.LIME.index
                             fillPattern = FillPatternType.SOLID_FOREGROUND
-                            setFont(font {
+                            font(this) {
                                 color = HSSFColor.HSSFColorPredefined.RED.index
-                            })
+                            }
                         }
                     }
                 }
