@@ -2,6 +2,7 @@ package com.matthewbrunelle
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.*
+import org.apache.poi.ss.util.WorkbookUtil
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
@@ -12,7 +13,8 @@ fun workbook(wb: Workbook = HSSFWorkbook(), block: Workbook.() -> Unit = {}): Wo
 
 fun Workbook.sheet(name: String? = null, block: Sheet.() -> Unit = {}): Sheet {
     return if (name != null) {
-        createSheet(name)
+        val safeName = WorkbookUtil.createSafeSheetName(name)
+        createSheet(safeName)
     } else {
         createSheet()
     }.apply(block)
@@ -27,6 +29,14 @@ fun Workbook.font(style: CellStyle, block: Font.() -> Unit): Font {
     val font = createFont().apply(block)
     style.setFont(font)
     return font
+}
+
+fun Workbook.richText(text: String): RichTextString {
+    return creationHelper.createRichTextString(text)
+}
+
+fun Workbook.dateFormat(dateFormat: String): Short {
+    return creationHelper.createDataFormat().getFormat(dateFormat)
 }
 
 fun Workbook.write(fileName: String) {

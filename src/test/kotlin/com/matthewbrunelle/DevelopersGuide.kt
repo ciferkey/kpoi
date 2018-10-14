@@ -14,7 +14,6 @@ import org.apache.poi.ss.usermodel.IndexedColors.*
 import org.apache.poi.ss.usermodel.VerticalAlignment
 import org.apache.poi.ss.usermodel.VerticalAlignment.BOTTOM
 import org.apache.poi.ss.usermodel.VerticalAlignment.TOP
-import org.apache.poi.ss.util.WorkbookUtil
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.junit.jupiter.api.Test
 import org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals
@@ -52,9 +51,7 @@ class DevelopersGuide {
         val wb = workbook {
             sheet("new sheet")
             sheet("second sheet")
-            // TODO: make all name safe?
-            val safeName = WorkbookUtil.createSafeSheetName("[O'Brien's sales*?]")
-            sheet(safeName)
+            sheet("[O'Brien's sales*?]")
         }
 
         assertReflectionEquals(expectedWb, wb)
@@ -64,14 +61,12 @@ class DevelopersGuide {
     fun creatingCells() {
         val expectedWb = GenerateTestInputs.creatingCells()
 
-        // TODO: extensions for creation helper?
-
         val wb = workbook {
             sheet("new sheet") {
                 row {
                     cell(1.0)
                     cell(1.2)
-                    cell(creationHelper.createRichTextString("This is a string"))
+                    cell(richText("This is a string"))
                     cell(true)
                 }
             }
@@ -85,14 +80,11 @@ class DevelopersGuide {
         val expectedWb = GenerateTestInputs.creatingDateCells()
 
         val wb = workbook {
-            // TODO: should you be able to do this in a inner scope?
-            // TODO: mechanisms for defaulting cell styles?
             val dateCellStyle = style {
-                dataFormat = creationHelper.createDataFormat().getFormat("m/d/yy h:mm")
+                dataFormat = dateFormat("m/d/yy h:mm")
             }
             sheet("new sheet") {
                 row {
-                    // TODO: make lambda for cell optional?
                     cell(date1)
                     cell(date1) {
                         cellStyle = dateCellStyle
@@ -112,8 +104,6 @@ class DevelopersGuide {
         val expectedWb = GenerateTestInputs.differentKindsOfCells()
 
         val wb = workbook {
-            // TODO: should you be able to do this in a inner scope?
-            // TODO: mechanisms for defaulting cell styles?
             sheet("new sheet") {
                 row(2) {
                     cell(1.1)
@@ -251,7 +241,6 @@ class DevelopersGuide {
                 row(1) {
                     cell("This is a test of fonts", 1) {
                         style {
-                            // TODO: why can't property notation be used here?
                             font(this) {
                                 fontHeightInPoints = 24.toShort()
                                 fontName = "Courier New"

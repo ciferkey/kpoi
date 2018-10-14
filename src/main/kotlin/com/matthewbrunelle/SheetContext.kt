@@ -9,7 +9,7 @@ fun Sheet.row(rowNumber: Int? = null, block: Row.() -> Unit): Row {
     return createRow(rowNumber ?: physicalNumberOfRows).apply(block)
 }
 
-fun Sheet.merge(firstRow: Int, lastRow: Int,firstCol: Int, lastCol: Int) {
+fun Sheet.merge(firstRow: Int, lastRow: Int, firstCol: Int, lastCol: Int) {
     addMergedRegion(CellRangeAddress(firstRow, lastRow, firstCol, lastCol))
 }
 

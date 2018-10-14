@@ -94,6 +94,13 @@ public class GenerateTestInputs {
         return wb;
     }
 
+    public void createWorkbook() {
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet();
+        Row row = sheet.createRow(0);
+        row.createCell(0);
+    }
+
     public static Workbook alignmentOptions() {
         Workbook wb = new HSSFWorkbook();
 
