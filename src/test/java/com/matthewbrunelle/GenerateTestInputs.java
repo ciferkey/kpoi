@@ -12,7 +12,7 @@ import java.util.Date;
 
 /**
  * The order of these steps have been changed since it impacts the comparison.
- * Additonally usage of Date has be changed to facilitate testing.
+ * Additionally usage of Date has be changed to facilitate testing.
  */
 public class GenerateTestInputs {
 

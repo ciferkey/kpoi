@@ -21,7 +21,9 @@ import org.unitils.reflectionassert.ReflectionComparatorMode.LENIENT_DATES
 
 
 /**
- * Translation of the "Busy Developers' Guide to HSSF and XSSF Features" )https://poi.apache.org/components/spreadsheet/quick-guide.html#NewWorkbook) to use this library. Also set up as runnable tests that compare their output to the original poi example's output.
+ * Translation of the "Busy Developers' Guide to HSSF and XSSF Features"
+ * (https://poi.apache.org/components/spreadsheet/quick-guide.html#NewWorkbook) to use this library.
+ * Also set up as runnable tests that compare their output to the original POI example's output.
  */
 class DevelopersGuide {
 
